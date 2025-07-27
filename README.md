@@ -258,6 +258,57 @@ To display your blog posts from dev.to on the portfolio:
 
 ---
 
+# Client/Server Component Architecture
+
+## Server Side Rendering (SSR) Issues and Solutions
+
+When working with Next.js App Router, it's crucial to properly separate client and server components to avoid common SSR issues like `document is not defined`. Here's how we structure our components:
+
+### 1. Server Components (pages)
+- Handle data fetching
+- Don't include any browser API calls
+- Example (`app/page.js`):
+```javascript
+import DynamicHomeWrapper from "./components/DynamicHomeWrapper";
+
+async function getData() {
+  // Server-side data fetching
+  const data = await fetch(...);
+  return data;
+}
+
+export default async function Page() {
+  const data = await getData();
+  return <DynamicHomeWrapper data={data} />;
+}
+```
+
+### 2. Client Components
+- Include "use client" directive at the top
+- Handle browser APIs (document, window)
+- Example (`components/DynamicHomeWrapper.jsx`):
+```javascript
+"use client";
+
+import dynamic from "next/dynamic";
+
+const HomePageWrapper = dynamic(() => import("./HomePageWrapper"), {
+  ssr: false  // Disable SSR for components using browser APIs
+});
+
+export default function DynamicHomeWrapper({ data }) {
+  return <HomePageWrapper data={data} />;
+}
+```
+
+### Key Points:
+1. Use `"use client"` directive for components that need browser APIs
+2. Keep data fetching in server components
+3. Use dynamic imports with `ssr: false` for components with browser dependencies
+4. Wrap client-side heavy components in a dedicated client wrapper
+
+This architecture ensures proper hydration and prevents SSR-related errors while maintaining good performance.
+
 # FAQ:
 
 1. For those facing the issue of "`next` is not recognized as an internal or external command, operable program or batch file."
@@ -265,11 +316,9 @@ To display your blog posts from dev.to on the portfolio:
 Run the following command:
 
 ```bash
-
 npm install -g next
-
 ```
 
-This installs Next.js globally
-
-then do the usual `npm run dev`
+This installs Next.js globally, then do the usual `npm run dev`
+#   s r i n a t h p u l i g a r i d e v  
+ 

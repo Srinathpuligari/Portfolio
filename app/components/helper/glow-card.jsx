@@ -1,12 +1,9 @@
-"use client"
+"use client";
 
 import { useEffect } from 'react';
 
-const GlowCard = ({ children , identifier}) => {
+const GlowCard = ({ children, identifier }) => {
   useEffect(() => {
-    const CONTAINER = document.querySelector(`.glow-container-${identifier}`);
-    const CARDS = document.querySelectorAll(`.glow-card-${identifier}`);
-
     const CONFIG = {
       proximity: 40,
       spread: 80,
@@ -16,7 +13,11 @@ const GlowCard = ({ children , identifier}) => {
       opacity: 0,
     };
 
+    let CONTAINER, CARDS;
+
     const UPDATE = (event) => {
+      if (!CARDS) return;
+
       for (const CARD of CARDS) {
         const CARD_BOUNDS = CARD.getBoundingClientRect();
 
@@ -37,9 +38,7 @@ const GlowCard = ({ children , identifier}) => {
         ];
 
         let ANGLE =
-          (Math.atan2(event?.y - CARD_CENTER[1], event?.x - CARD_CENTER[0]) *
-            180) /
-          Math.PI;
+          (Math.atan2(event?.y - CARD_CENTER[1], event?.x - CARD_CENTER[0]) * 180) / Math.PI;
 
         ANGLE = ANGLE < 0 ? ANGLE + 360 : ANGLE;
 
@@ -47,22 +46,25 @@ const GlowCard = ({ children , identifier}) => {
       }
     };
 
-    document.body.addEventListener('pointermove', UPDATE);
-
     const RESTYLE = () => {
+      if (!CONTAINER) return;
       CONTAINER.style.setProperty('--gap', CONFIG.gap);
       CONTAINER.style.setProperty('--blur', CONFIG.blur);
       CONTAINER.style.setProperty('--spread', CONFIG.spread);
-      CONTAINER.style.setProperty(
-        '--direction',
-        CONFIG.vertical ? 'column' : 'row'
-      );
+      CONTAINER.style.setProperty('--direction', CONFIG.vertical ? 'column' : 'row');
     };
 
-    RESTYLE();
-    UPDATE();
+    // Delay DOM access until it's rendered
+    requestAnimationFrame(() => {
+      CONTAINER = document.querySelector(`.glow-container-${identifier}`);
+      CARDS = document.querySelectorAll(`.glow-card-${identifier}`);
 
-    // Cleanup event listener
+      RESTYLE();
+      UPDATE();
+      document.body.addEventListener('pointermove', UPDATE);
+    });
+
+    // Cleanup
     return () => {
       document.body.removeEventListener('pointermove', UPDATE);
     };
