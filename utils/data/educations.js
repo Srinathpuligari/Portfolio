@@ -1,20 +1,20 @@
 export const educations = [
   {
     id: 1,
-    title: "Bachelor Degree",
-    duration: "2020 - Present",
-    institution: "National University of Bangladesh",
+    title: "BE - Computer Science and Engineering",
+    duration: "2022 - 2026",
+    institution: "Chaitanya Bharathi Institute of Technology, Hyderabad",
   },
   {
     id: 2,
-    title: "Higher Secondary Certificate",
-    duration: "2018 - 2020",
-    institution: "Noakhali Islamia Kamil Madrasah",
+    title: "Intermediate - MPC",
+    duration: "2020 - 2022",
+    institution: "SR Junior College, Dubbak",
   },
   {
     id: 3,
-    title: "Secondary School Certificate",
-    duration: "2008 - 2018",
-    institution: "Baitus Saif Islamia Madrasah",
+    title: "High School - SSC",
+    duration: "2019 - 2020",
+    institution: "Telangana Model School, Dubbak",
   }
 ]
